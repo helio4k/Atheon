@@ -43,6 +43,7 @@ public interface IDestinyDb
     Task<List<DestinyProfileLiteWithValue<int>>> GetGuardianRanksLeaderboardAsync(long[] clanIds);
     Task<List<DestinyProfileLiteWithDoubleValues<int, int>>> GetGuardianPowerLevelAsync(long[] clanIds);
     Task<List<DestinyProfileLiteWithDoubleValues<int, int>>> GetGuardianTriumphScoreAsync(long[] clanIds);
+    Task<List<DestinyProfileLiteWithDoubleValues<int, int>>> GetGuardianSeasonPassLevelsAsync(uint pass, uint prestigePass, long[] clanIds);
     Task<List<DestinyProfileLiteWithValue<int>>> GetTimePlayedLeaderboardAsync(long[] clanIds);
     Task<List<DestinyProfileLiteWithValue<int>>> GetRecordObjectiveLeaderboardAsync(uint recordHash, long[] clanIds);
     Task<List<DestinyProfileLiteWithValue<int>>> GetRecordIntervalObjectiveLeaderboardAsync(uint recordHash, long[] clanIds);
@@ -51,9 +52,11 @@ public interface IDestinyDb
 
     Task TryInsertClanBroadcastAsync(ClanBroadcastDbModel clanBroadcast);
     Task TryInsertProfileBroadcastAsync(DestinyUserProfileBroadcastDbModel profileBroadcast);
+    Task TryInsertProfileCustomBroadcastAsync(DestinyUserProfileCustomBroadcastDbModel profileCustomBroadcast);
 
     Task MarkClanBroadcastSentAsync(ClanBroadcastDbModel clanBroadcast);
     Task MarkUserBroadcastSentAsync(DestinyUserProfileBroadcastDbModel profileBroadcast);
+    Task MarkUserCustomBroadcastSentAsync(DestinyUserProfileCustomBroadcastDbModel profileCustomBroadcast);
 
     Task UpsertCuratedRecordDefinitionAsync(CuratedRecord curatedRecord);
     Task UpsertCuratedCollectibleDefinitionAsync(CuratedCollectible curatedCollectible);
