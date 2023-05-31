@@ -62,7 +62,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
             var bungieClient = await _bungieClientProvider.GetClientAsync();
             var lang = await _localizationService.GetGuildLocale(GuildId);
 
-            if (bungieClient.TryGetDefinition<DestinyCollectibleDefinition>(collectibleHash, lang, out var colDef))
+            if (!bungieClient.TryGetDefinition<DestinyCollectibleDefinition>(collectibleHash, out var colDef, lang))
                 return DestinyDefinitionNotFound<DestinyCollectibleDefinition>(collectibleHash);
 
             var (defName, defIcon) = _destinyDefinitionDataService.GetCollectibleDisplayProperties(colDef, lang);
@@ -125,7 +125,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
             var bungieClient = await _bungieClientProvider.GetClientAsync();
             var lang = await _localizationService.GetGuildLocale(GuildId);
 
-            if (!bungieClient.TryGetDefinition<DestinyRecordDefinition>(recordHash, lang, out var recordDefinition))
+            if (!bungieClient.TryGetDefinition<DestinyRecordDefinition>(recordHash, out var recordDefinition, lang))
                 return DestinyDefinitionNotFound<DestinyRecordDefinition>(recordHash);
 
             var embedBuilder = _embedBuilderService
@@ -177,6 +177,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
         [Choice("Touch of Malice", "192937277")]
         [Choice("Hierarchy of Needs", "3558330464")]
         [Choice("Conditional Finality", "2553509474")]
+        [Choice("The Navigator", "161963863")]
         uint collectibleHash,
         [Summary(description: "Whether to hide this message")]
         bool hide = false)
@@ -186,7 +187,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
             var client = await _bungieClientProvider.GetClientAsync();
             var lang = await _localizationService.GetGuildLocale(GuildId);
 
-            if (!client.TryGetDefinition<DestinyCollectibleDefinition>(collectibleHash, lang, out var collectibleDefinition))
+            if (!client.TryGetDefinition<DestinyCollectibleDefinition>(collectibleHash, out var collectibleDefinition, lang))
                 return DestinyDefinitionNotFound<DestinyCollectibleDefinition>(collectibleHash);
 
             var guildSettings = await _destinyDb.GetGuildSettingsAsync(GuildId);
@@ -245,7 +246,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
             var client = await _bungieClientProvider.GetClientAsync();
             var lang = await _localizationService.GetGuildLocale(GuildId);
 
-            if (!client.TryGetDefinition<DestinyRecordDefinition>(titleRecordHash, lang, out var titleDefinition))
+            if (!client.TryGetDefinition<DestinyRecordDefinition>(titleRecordHash, out var titleDefinition, lang))
                 return DestinyDefinitionNotFound<DestinyRecordDefinition>(titleRecordHash);
 
 
@@ -328,7 +329,7 @@ public class ProfileDefinitionLookupCommandHandler : SlashCommandHandlerBase
             var clanReferences = await _destinyDb.GetClanReferencesFromIdsAsync(clanIds);
 
             var embedBuilder = _embedBuilderService
-            .GetTemplateEmbed()
+                .GetTemplateEmbed()
                 .WithTitle($"Users who {(hasVersion is false ? "don't " : "")}have {gameVersion}");
 
             var gettersList = new List<Func<DestinyProfileLite, object>>()
